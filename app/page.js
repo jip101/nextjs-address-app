@@ -1,60 +1,59 @@
 "use client"
 
 import { useState, useEffect, useRef } from 'react'
-import { useDebounce } from 'use-debounce'
 
 export default function Home() {
   const [input, setInput] = useState('')
-  const [data, setData] = useState(['Awaiting Results'])
+  const [returnedAddress, setReturnedAddress] = useState('')
   const timeout = useRef()
 
   
   function handleInput(e) {
     e.preventDefault()
-    //useDebounce(setInput(e.target.value), 1000)
     setInput(e.target.value)
   }
   
   function handleSubmit(e) {
     e.preventDefault()
+    console.log(JSON.stringify(e))
   };
   
-  useEffect(() => {
-    //clearTimeout(timeout.current)
+  useEffect(() => {  
+    //reset timer
+    clearTimeout(timeout.current)
+
     //for useEffect cleanup
     //if true, will not update state
     let ignore = false
     
-    /*
-     * @param {string} input
-     */
-    async function fetchData() {
-      if (input) {
-        let requestOptions = {
-          method: 'POST',
-          body: JSON.stringify(input),
-          headers: { 'content-type': 'application/json' },
-        };
-          try{
+    timeout.current = setTimeout(() => {
+      async function fetchData() {
+        if (input.trim() && input.length >= 5) {
+          let requestOptions = {
+            method: 'POST',
+            body: JSON.stringify(input),
+            headers: { 'content-type': 'application/json' },
+          };
             let response = await fetch('/api/test', requestOptions)
-            //console.log(response)
-            let jsonResponse = await response.json()
-            console.log(jsonResponse)
-            jsonResponse.ok && !ignore ? setData(jsonResponse):''
-            console.log('triggered')
-          } catch (error) {
-            console.log(error)
-          }
+            console.log(response)
+            if (response.ok && !ignore){
+              let jsonResponse = await response.json()
+              console.log(jsonResponse)
+              setReturnedAddress(jsonResponse)
+            }
+        }
+        else {
+          setReturnedAddress('')
+        }
       }
-      else {
-        setData('')
-      }
-    }
-    fetchData();
+      fetchData();
+    }, 1000)
 
-    //const debounceFetch = debounce(fetchData, 1000);
 
-    return (() => ignore=true)
+    return (() => {
+      ignore=true;
+      clearTimeout(timeout.current);
+    })
   }, [input])
   
 
@@ -65,7 +64,11 @@ export default function Home() {
         onSubmit={handleSubmit}>
         <input placeholder='Address' value={input} onChange={handleInput} required/>
       </form>
-      <p>{data?data:''}</p>
+      <p>Corrected address: {returnedAddress.results?.length > 0 ? returnedAddress.results[0].formatted_address : "awaiting input"}</p>
+      <p>{returnedAddress.results?.length > 0 ? "lat: " + returnedAddress.results[0].geometry.location.lat : ''}</p>
+      <p>{returnedAddress.results?.length > 0 ? "long: " + returnedAddress.results[0].geometry.location.lng : ''}</p>
+
+
     </main>
   )
 }
