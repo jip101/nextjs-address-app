@@ -7,12 +7,12 @@ export async function POST(request) {
 
   const myUrl = new URL("https://maps.googleapis.com/maps/api/geocode/json")
   myUrl.searchParams.append("address", userInput)
-  myUrl.searchParams.append("key", process.env.GMAP)
+  myUrl.searchParams.append("key", process.env.GMAPS)
 
   const data = await fetch(myUrl)
   const result = await data.json()
   console.log(result)
-  if (result.status === 'OK' || result.status === 'ZERO RESULTS') {
+  if (result.status) {
     return Response.json(result);
   }
   else {

@@ -1,13 +1,14 @@
 "use client"
 
 import { useState, useEffect, useRef } from 'react'
+import Display from './components/display'
 
 export default function Home() {
   const [input, setInput] = useState('')
   const [returnedAddress, setReturnedAddress] = useState('')
   const timeout = useRef()
 
-  
+
   function handleInput(e) {
     e.preventDefault()
     setInput(e.target.value)
@@ -15,7 +16,6 @@ export default function Home() {
   
   function handleSubmit(e) {
     e.preventDefault()
-    console.log(JSON.stringify(e))
   };
   
   useEffect(() => {  
@@ -57,17 +57,16 @@ export default function Home() {
   }, [input])
   
 
+
   return (
-    <main className='grid place-content-center h-full'>
-      <form action='/api/test' 
+    <main className='grid place-content-center bg-slate-500 h-1/2 w-3/4 p-6 border-2 border-black rounded drop-shadow-lg '>
+      <form className='grid w-full justify-items-center'
+        action='/api/test' 
         method='POST' 
         onSubmit={handleSubmit}>
-        <input placeholder='Address' value={input} onChange={handleInput} required/>
+        <input className='text-gray-200 placeholder-slate-200 bg-slate-700 place-content-center' placeholder='Address' value={input} onChange={handleInput} required/>
       </form>
-      <p>Corrected address: {returnedAddress.results?.length > 0 ? returnedAddress.results[0].formatted_address : "awaiting input"}</p>
-      <p>{returnedAddress.results?.length > 0 ? "lat: " + returnedAddress.results[0].geometry.location.lat : ''}</p>
-      <p>{returnedAddress.results?.length > 0 ? "long: " + returnedAddress.results[0].geometry.location.lng : ''}</p>
-
+      <Display returnedAddress={returnedAddress}/>
 
     </main>
   )
@@ -78,3 +77,9 @@ export default function Home() {
 //      {address}
 //    </p>
 //})}
+
+/*
+<p>Corrected address: {returnedAddress.results?.length > 0 ? returnedAddress.results[0].formatted_address : "awaiting input"}</p>
+<p>{returnedAddress.results?.length > 0 ? "lat: " + returnedAddress.results[0].geometry.location.lat : ''}</p>
+<p>{returnedAddress.results?.length > 0 ? "long: " + returnedAddress.results[0].geometry.location.lng : ''}</p>
+*/
