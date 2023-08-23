@@ -35,3 +35,7 @@ body {
 svg {
   width: auto;
 }
+
+.table-border { 
+  @apply border-4 border-slate-400 flex-1
+}

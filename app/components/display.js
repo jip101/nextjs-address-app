@@ -9,21 +9,23 @@ export default function Display ({ returnedAddress }) {
 
     if (returnedAddress.results) {
         return(
-            <table className='w-full bg-slate-600 text-slate-200'>
-                <tr>
-                    <th>Address</th>
-                    <th>Latitude</th>
-                    <th>Longitude</th>
-                </tr>
-                    {returnedAddress.results.map((item, id) => {
-                        return (
-                        <tr key={id}>
-                            <td>{item.formatted_address}</td> 
-                            <td>{item.geometry.location.lat}</td>
-                            <td>{item.geometry.location.lng}</td>
-                        </tr>
-                        )
-                    })}
+            <table className='w-full bg-slate-600 text-slate-200 table-border mt-2'>
+                <tbody>
+                    <tr>
+                        <th className='table-border'>Address</th>
+                        <th className='table-border'>Latitude</th>
+                        <th className='table-border'>Longitude</th>
+                    </tr>
+                        {returnedAddress.results.map((item, id) => {
+                            return (
+                                <tr key={id}>
+                                <td className='table-border p-3'>{item.formatted_address}</td> 
+                                <td className='table-border'>{item.geometry.location.lat}</td>
+                                <td className='table-border'>{item.geometry.location.lng}</td>
+                            </tr>
+                            )
+                        })}
+                </tbody>
             </table>
         )
     }
